@@ -1,0 +1,10 @@
+{
+    "minimap2.TARGET_SEQ_FILE": "target.fa.gz",
+    "minimap2.QUERY_SEQ_FILE": "query.fa.gz",
+    "minimap2.OUT_LABEL": "test",
+    "minimap2.MINIMAP2_ARGS": "-x asm5",
+    "minimap2.CORES": 2,
+    "minimap2.DISK": 1,
+    "minimap2.MEM": 2
+}
+ 
