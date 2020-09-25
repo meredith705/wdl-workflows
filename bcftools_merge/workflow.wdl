@@ -13,13 +13,15 @@ workflow bcftools_merge {
         Int CORES = 1
         Int DISK = 100
         Int MEM = 10
+        Int PREEMPTIBLE = 0
     }
 
     call merge {
         input:
         in_vcf_list=VCF_LIST,
         in_disk=DISK,
-        in_mem=MEM
+        in_mem=MEM,
+        in_preemptible=PREEMPTIBLE
     }
     
     call normalize {
@@ -29,7 +31,8 @@ workflow bcftools_merge {
         in_fai_file=REF_FASTA_IDX,
         in_cores=CORES,
         in_disk=DISK,
-        in_mem=MEM
+        in_mem=MEM,
+        in_preemptible=PREEMPTIBLE
     }
     
     output {
@@ -43,6 +46,7 @@ task merge {
         Array[File] in_vcf_list
         Int in_disk
         Int in_mem
+        Int in_preemptible
     }
     command <<<
     set -eux -o pipefail
@@ -56,7 +60,8 @@ task merge {
     done
 
     echo "Merge VCFs and sort..."
-    bcftools merge -m all -l vcf.list.txt | bcftools sort -O z > merged.vcf.bgz
+    mkdir -p temp
+    bcftools merge -m all -l vcf.list.txt | bcftools sort -T temp -O z > merged.vcf.bgz
     >>>
     output {
         File out_vcf= "merged.vcf.bgz"
@@ -66,6 +71,7 @@ task merge {
         memory: in_mem + " GB"
         cpu: 1
         disks: "local-disk " + in_disk + " SSD"
+        preemptible: in_preemptible
     }
 }
 
@@ -77,11 +83,13 @@ task normalize {
         Int in_cores
         Int in_disk
         Int in_mem
+        Int in_preemptible
     }
     command <<<
     set -eux -o pipefail
 
-    bcftools norm -m -both --threads ~{in_cores} -f ~{in_fasta_file} ~{in_vcf_file} | bcftools sort -O z > norm.vcf.bgz
+    mkdir -p temp
+    bcftools norm -m -both --threads ~{in_cores} -f ~{in_fasta_file} ~{in_vcf_file} | bcftools sort -T temp -O z > norm.vcf.bgz
     bcftools index -t norm.vcf.bgz
     >>>
     output {
@@ -93,6 +101,7 @@ task normalize {
         memory: in_mem + " GB"
         cpu: in_cores
         disks: "local-disk " + in_disk + " SSD"
+        preemptible: in_preemptible
     }
 }
 
