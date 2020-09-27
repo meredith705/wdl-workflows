@@ -35,10 +35,19 @@ workflow bcftools_merge {
         in_mem=MEM,
         in_preemptible=PREEMPTIBLE
     }
-    
+
+    call sort {
+        input:
+        in_vcf_file=normalize.out_vcf,
+        in_cores=CORES,
+        in_disk=DISK,
+        in_mem=MEM,
+        in_preemptible=PREEMPTIBLE
+    }
+
     output {
-        File output_vcf = normalize.out_vcf
-        File output_vcf_idx = normalize.out_vcf_idx
+        File output_vcf = sort.out_vcf
+        File output_vcf_idx = sort.out_vcf_idx
     }
 }
 
@@ -53,16 +62,12 @@ task merge {
     command <<<
     set -eux -o pipefail
     
-    rm -f vcf.list.txt
-    for INVCF in ~{sep=" " in_vcf_list}
+    while read invcf
     do
-        OUTVCF=`basename $INVCF`
-        bcftools norm -m -both -O z $INVCF > $OUTVCF
-        bcftools index $OUTVCF
-        echo $OUTVCF >> vcf.list.txt
-    done
+        bcftools index $invcf
+    done < ~{write_lines(in_vcf_list)}
 
-    bcftools merge --threads ~{in_cores} -m all -l vcf.list.txt > merged.vcf.bgz
+    bcftools merge --threads ~{in_cores} -m all -l ~{write_lines(in_vcf_list)} -O z > merged.vcf.bgz
     >>>
     output {
         File out_vcf= "merged.vcf.bgz"
@@ -88,14 +93,38 @@ task normalize {
     }
     command <<<
     set -eux -o pipefail
-
-    mkdir -p temp
-    bcftools norm -m -both --threads ~{in_cores} -f ~{in_fasta_file} ~{in_vcf_file} | bcftools sort -T temp -O z > norm.vcf.bgz
-    bcftools index -t norm.vcf.bgz
+    bcftools norm -m -both --threads ~{in_cores} -f ~{in_fasta_file} -O z ~{in_vcf_file} > norm.vcf.bgz
     >>>
     output {
         File out_vcf= "norm.vcf.bgz"
-        File out_vcf_idx= "norm.vcf.bgz.tbi"
+    }
+    runtime {
+        docker: "quay.io/biocontainers/bcftools:1.10--h5d15f04_0"
+        memory: in_mem + " GB"
+        cpu: in_cores
+        disks: "local-disk " + in_disk + " SSD"
+        preemptible: in_preemptible
+    }
+}
+
+task sort {
+    input {
+        File in_vcf_file
+        Int in_cores
+        Int in_disk
+        Int in_mem
+        Int in_preemptible
+    }
+    command <<<
+    set -eux -o pipefail
+
+    mkdir -p temp
+    bcftools sort -T temp -m 2G -O z  ~{in_vcf_file} > sorted.vcf.bgz
+    bcftools index -t sorted.vcf.bgz
+    >>>
+    output {
+        File out_vcf= "sorted.vcf.bgz"
+        File out_vcf_idx= "sorted.vcf.bgz.tbi"
     }
     runtime {
         docker: "quay.io/biocontainers/bcftools:1.10--h5d15f04_0"
