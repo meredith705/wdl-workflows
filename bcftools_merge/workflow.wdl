@@ -19,6 +19,7 @@ workflow bcftools_merge {
     call merge {
         input:
         in_vcf_list=VCF_LIST,
+        in_cores=CORES,
         in_disk=DISK,
         in_mem=MEM,
         in_preemptible=PREEMPTIBLE
@@ -44,6 +45,7 @@ workflow bcftools_merge {
 task merge {
     input {
         Array[File] in_vcf_list
+        Int in_cores
         Int in_disk
         Int in_mem
         Int in_preemptible
@@ -54,14 +56,13 @@ task merge {
     rm -f vcf.list.txt
     for INVCF in ~{sep=" " in_vcf_list}
     do
-        echo "Indexing $INVCF..."
-        bcftools index $INVCF
-        echo $INVCF >> vcf.list.txt
+        OUTVCF=`basename $INVCF`
+        bcftools norm -m -both -O z $INVCF > $OUTVCF
+        bcftools index $OUTVCF
+        echo $OUTVCF >> vcf.list.txt
     done
 
-    echo "Merge VCFs and sort..."
-    mkdir -p temp
-    bcftools merge -m all -l vcf.list.txt | bcftools sort -T temp -O z > merged.vcf.bgz
+    bcftools merge --threads ~{in_cores} -m all -l vcf.list.txt > merged.vcf.bgz
     >>>
     output {
         File out_vcf= "merged.vcf.bgz"
