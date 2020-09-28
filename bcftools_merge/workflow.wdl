@@ -93,7 +93,8 @@ task normalize {
     }
     command <<<
     set -eux -o pipefail
-    bcftools norm -m -both --threads ~{in_cores} -f ~{in_fasta_file} -O z ~{in_vcf_file} > norm.vcf.bgz
+    bcftools norm --threads ~{in_cores} -m -both -O z ~{in_vcf_file} > temp.vcf.bgz
+    bcftools norm --threads ~{in_cores} -f ~{in_fasta_file} -O z temp.vcf.bgz > norm.vcf.bgz
     >>>
     output {
         File out_vcf= "norm.vcf.bgz"
