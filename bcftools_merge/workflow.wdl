@@ -61,13 +61,17 @@ task merge {
     }
     command <<<
     set -eux -o pipefail
-    
+
+    rm -f vcf_list.txt
     while read invcf
     do
-        bcftools index $invcf
+        outvcf=`basename $invcf`
+        bcftools norm -m -both $invcf | bcftools view --exclude 'GT="0/0" || GT="0" || GT~"\."' -O z > $outvcf
+        bcftools index $outvcf
+        echo $outvcf >> vcf_list.txt
     done < ~{write_lines(in_vcf_list)}
 
-    bcftools merge --threads ~{in_cores} -m all -l ~{write_lines(in_vcf_list)} -O z > merged.vcf.bgz
+    bcftools merge -0 --threads ~{in_cores} -m none -l vcf_list.txt -O z > merged.vcf.bgz
     >>>
     output {
         File out_vcf= "merged.vcf.bgz"
@@ -93,8 +97,7 @@ task normalize {
     }
     command <<<
     set -eux -o pipefail
-    bcftools norm --threads ~{in_cores} -m -both -O z ~{in_vcf_file} > temp.vcf.bgz
-    bcftools norm --threads ~{in_cores} -f ~{in_fasta_file} -O z temp.vcf.bgz > norm.vcf.bgz
+    bcftools norm --threads ~{in_cores} -f ~{in_fasta_file} -O z ~{in_vcf_file} > norm.vcf.bgz
     >>>
     output {
         File out_vcf= "norm.vcf.bgz"
