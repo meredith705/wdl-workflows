@@ -2,7 +2,7 @@
     "bcftools_merge.VCF_LIST": ["samp1.vcf.bgz", "samp2.vcf.bgz"],
     "bcftools_merge.REF_FASTA": "hg38.fa",
     "bcftools_merge.REF_FASTA_IDX": "hg38.fa.fai",
-    "bcftools_merge.CORES": 2,
+    "bcftools_merge.CORES": 1,
     "bcftools_merge.DISK": 1,
     "bcftools_merge.MEM": 2
 }
