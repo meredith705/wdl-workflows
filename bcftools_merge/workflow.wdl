@@ -50,32 +50,33 @@ task merge {
     set -eux -o pipefail
 
     # prepare scripts to split and normalize SVs for each sample
-    rm -f vcf_list.txt
-    mkdir -p temp scripts
+    rm -f vcf_list.txt split_scripts.txt
+    mkdir -p temp
     while read invcf
     do
-        outvcf=`basename $invcf`
         if [ ~{in_split_mode} == true ]; then
             # split variants
-            echo "bcftools norm -m -both $invcf -O z > $outvcf.split.vcf.gz" > scripts/script_samp.$outvcf.sh
+            echo "bcftools norm -m -both $invcf -O z > $invcf.split.vcf.gz" > $invcf.split_script.sh
             # realign and split variants
-            echo "python3 /scripts/align_variants.py -i $outvcf.split.vcf.gz -f ~{in_fasta_file} -o $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
+            echo "python3 /scripts/align_variants.py -i $invcf.split.vcf.gz -f ~{in_fasta_file} -o $invcf.al.vcf" >> $invcf.split_script.sh
             # filter ref calls, normalize, sort and merge hets that match exactly into homs
-            echo "bcftools view --exclude 'GT=\"0/0\" || GT=\"0\" || GT~\"\\.\"' $outvcf.al.vcf | bcftools norm -f ~{in_fasta_file} | bcftools sort -T temp/$outvcf.temp | python3 /scripts/merge_exact_hets.py | bgzip > $outvcf" >> scripts/script_samp.$outvcf.sh
+            echo "bcftools view --exclude 'GT=\"0/0\" || GT=\"0\" || GT~\"\\.\"' $invcf.al.vcf | bcftools norm -f ~{in_fasta_file} | bcftools sort -T $invcf.temp | python3 /scripts/merge_exact_hets.py | bgzip > $invcf.sorted.vcf.bgz" >> $invcf.split_script.sh
             # index new VCF
-            echo "tabix -f $outvcf" >> scripts/script_samp.$outvcf.sh
+            echo "tabix -f $invcf.sorted.vcf.bgz" >> $invcf.split_script.sh
             # clean up
-            echo "rm -f $outvcf.split.vcf.gz $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
-            echo $outvcf >> vcf_list.txt
+            echo "rm -f $invcf.split.vcf.gz $invcf.al.vcf" >> $invcf.split_script.sh
+            echo $invcf.split_script.sh >> split_scripts.txt
+            echo $invcf.sorted.vcf.bgz >> vcf_list.txt
         else
             # no splitting/normalization/realignment, just index input VCF
-            echo "bcftools index $invcf" > scripts/script_samp.$outvcf.sh
+            echo "bcftools index $invcf" > $invcf.split_script.sh
+            echo $invcf.split_script.sh >> split_scripts.txt
             echo $invcf >> vcf_list.txt
         fi
     done < ~{write_lines(in_vcf_list)}
 
     # run the scripts in parallel
-    ls scripts/script_samp.*.sh | parallel -j ~{in_cores} sh {} 
+    cat split_scripts.txt | parallel -j ~{in_cores} sh {} 
 
     # merge the SVs across samples
     bcftools merge -0 --threads ~{in_cores} -m none -l vcf_list.txt -O z > merged.vcf.bgz
