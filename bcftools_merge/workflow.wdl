@@ -72,7 +72,7 @@ task merge {
         File out_vcf_idx= "merged.vcf.bgz.tbi"
     }
     runtime {
-        docker: "jmonlong/merge-sv-vg@sha256:12eadbfc16d35f85c69bb1b4994521f536f83f39e155c91ece93dcb3e6149017"
+        docker: "jmonlong/merge-sv-vg@sha256:f10085ba57c7f5f26e6bb066e5cd3befe319ece6d547d64c81224abfc8a8b1d4"
         memory: in_mem + " GB"
         cpu: in_cores
         disks: "local-disk " + in_disk + " SSD"
