@@ -54,7 +54,7 @@ task merge {
         outvcf=`basename $invcf`
         echo "bcftools norm -m -both $invcf -O z > $outvcf.split.vcf.gz" > scripts/script_samp.$outvcf.sh
         echo "python3 /scripts/align_variants.py -i $outvcf.split.vcf.gz -f ~{in_fasta_file} -o $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
-        echo "bcftools view --exclude 'GT=\"0/0\" || GT=\"0\" || GT~\"\\.\"' $outvcf.al.vcf | bcftools norm -f ~{in_fasta_file} | bcftools sort -T temp | python3 /scripts/merge_exact_hets.py | bgzip > $outvcf" >> scripts/script_samp.$outvcf.sh
+        echo "bcftools view --exclude 'GT=\"0/0\" || GT=\"0\" || GT~\"\\.\"' $outvcf.al.vcf | bcftools norm -f ~{in_fasta_file} | bcftools sort -T temp/$outvcf.temp | python3 /scripts/merge_exact_hets.py | bgzip > $outvcf" >> scripts/script_samp.$outvcf.sh
         echo "tabix -f $outvcf" >> scripts/script_samp.$outvcf.sh
         echo "rm -f $outvcf.split.vcf.gz $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
         echo $outvcf >> vcf_list.txt
