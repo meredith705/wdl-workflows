@@ -10,6 +10,7 @@ workflow bcftools_merge {
         Array[File] VCF_LIST
         File REF_FASTA
         File REF_FASTA_IDX
+        Boolean SPLIT_MODE = true  ## split/normalized/realigned variants? If not, only (bcftools) merge
         Int CORES = 1
         Int DISK = 100
         Int MEM = 10
@@ -21,6 +22,7 @@ workflow bcftools_merge {
         in_vcf_list=VCF_LIST,
         in_fasta_file=REF_FASTA,
         in_fai_file=REF_FASTA_IDX,
+        in_split_mode=SPLIT_MODE,
         in_cores=CORES,
         in_disk=DISK,
         in_mem=MEM,
@@ -38,6 +40,7 @@ task merge {
         Array[File] in_vcf_list
         File in_fasta_file
         File in_fai_file
+        Boolean in_split_mode
         Int in_cores
         Int in_disk
         Int in_mem
@@ -52,12 +55,23 @@ task merge {
     while read invcf
     do
         outvcf=`basename $invcf`
-        echo "bcftools norm -m -both $invcf -O z > $outvcf.split.vcf.gz" > scripts/script_samp.$outvcf.sh
-        echo "python3 /scripts/align_variants.py -i $outvcf.split.vcf.gz -f ~{in_fasta_file} -o $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
-        echo "bcftools view --exclude 'GT=\"0/0\" || GT=\"0\" || GT~\"\\.\"' $outvcf.al.vcf | bcftools norm -f ~{in_fasta_file} | bcftools sort -T temp/$outvcf.temp | python3 /scripts/merge_exact_hets.py | bgzip > $outvcf" >> scripts/script_samp.$outvcf.sh
-        echo "tabix -f $outvcf" >> scripts/script_samp.$outvcf.sh
-        echo "rm -f $outvcf.split.vcf.gz $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
-        echo $outvcf >> vcf_list.txt
+        if [ ~{in_split_mode} == true ]; then
+            # split variants
+            echo "bcftools norm -m -both $invcf -O z > $outvcf.split.vcf.gz" > scripts/script_samp.$outvcf.sh
+            # realign and split variants
+            echo "python3 /scripts/align_variants.py -i $outvcf.split.vcf.gz -f ~{in_fasta_file} -o $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
+            # filter ref calls, normalize, sort and merge hets that match exactly into homs
+            echo "bcftools view --exclude 'GT=\"0/0\" || GT=\"0\" || GT~\"\\.\"' $outvcf.al.vcf | bcftools norm -f ~{in_fasta_file} | bcftools sort -T temp/$outvcf.temp | python3 /scripts/merge_exact_hets.py | bgzip > $outvcf" >> scripts/script_samp.$outvcf.sh
+            # index new VCF
+            echo "tabix -f $outvcf" >> scripts/script_samp.$outvcf.sh
+            # clean up
+            echo "rm -f $outvcf.split.vcf.gz $outvcf.al.vcf" >> scripts/script_samp.$outvcf.sh
+            echo $outvcf >> vcf_list.txt
+        else
+            # no splitting/normalization/realignment, just index input VCF
+            echo "bcftools index $invcf" > scripts/script_samp.$outvcf.sh
+            echo $invcf >> vcf_list.txt
+        fi
     done < ~{write_lines(in_vcf_list)}
 
     # run the scripts in parallel
