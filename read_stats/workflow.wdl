@@ -32,7 +32,7 @@ task readStats {
         Int histogramMaxLength = 0
         Int memSizeGB = 2
         Int threadCount = 2
-        Int diskSizeGB = 64
+        Int diskSizeGB = 200
     }
 
 	command <<<
