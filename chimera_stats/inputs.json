@@ -1,0 +1,5 @@
+{
+  "chimera_stats.READS": "test.reads.fastq.gz",
+  "chimera_stats.REFERENCE_FILE": "ref.fa.gz"
+}
+

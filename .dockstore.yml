@@ -11,3 +11,14 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: ChimeraStats
+    subclass: WDL
+    description: Estimate the amount of chimeric (long) reads. Uses https://github.com/rlorigro/Liger2LiGer.
+    primaryDescriptorPath: /chimera_stats/workflow.wdl
+    testParameterFiles:
+      - /chimera_stats/inputs.json
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
