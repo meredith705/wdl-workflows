@@ -5,7 +5,7 @@ workflows:
     description: Simple stats about reads in one gzipped FASTQ file. Simplified from HPP workflow https://github.com/human-pangenomics/hpp_production_workflows/blob/master/QC/wdl/tasks/read_stats.wdl (one file input, must be gzipped FASTQ, but all in one task)
     primaryDescriptorPath: /read_stats/workflow.wdl
     testParameterFiles:
-      - /read_stats/input.json
+      - /read_stats/inputs.json
     branches:
       - master
     authors:
