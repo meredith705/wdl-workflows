@@ -1,0 +1,7 @@
+{
+  "guppy_basecalling.fast5_tar_file": "reads.fast5.tar",
+  "guppy_basecalling.sample_name": "testSample",
+  "guppy_basecalling.guppy_version": "guppy_version_X",
+  "guppy_basecalling.desired_size_GB": "4"
+}
+
