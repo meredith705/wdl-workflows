@@ -24,7 +24,7 @@ workflows:
         email: jmonlong@ucsc.edu
   - name: AlignStats
     subclass: WDL
-    description: Compute the distribution of alignment identity using wambam: https://github.com/rlorigro/wambam
+    description: Compute the distribution of alignment identity using wambam https://github.com/rlorigro/wambam
     primaryDescriptorPath: /align_stats/workflow.wdl
     testParameterFiles:
       - /align_stats/inputs.json
