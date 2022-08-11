@@ -1,0 +1,5 @@
+{
+  "align_stats.READS": "../chimera_stats/test.reads.fastq.gz",
+  "align_stats.REFERENCE_FILE": "../chimera_stats/ref.fa.gz"
+}
+

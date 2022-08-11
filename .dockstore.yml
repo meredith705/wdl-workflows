@@ -22,6 +22,17 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: AlignStats
+    subclass: WDL
+    description: Compute the distribution of alignment identity using wambam: https://github.com/rlorigro/wambam
+    primaryDescriptorPath: /align_stats/workflow.wdl
+    testParameterFiles:
+      - /align_stats/inputs.json
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
   - name: GuppyBasecalling
     subclass: WDL
     description: Basecall a fast5 file using Guppy. This workflow was adapted from the scatterGuppy.wdl in the human-pangenomics/hpp_production_workflows repo (https://github.com/human-pangenomics/hpp_production_workflows/blob/master/data_processing/wdl/scatterGuppy.wdl). It was originally written by Jimin Park (jpark621@ucsc.edu).
