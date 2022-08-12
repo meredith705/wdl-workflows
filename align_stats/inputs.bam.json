@@ -1,0 +1,4 @@
+{
+  "align_stats.BAM_FILE": "test.reads.bam",
+  "align_stats.runMinimap2.memSizeGB": 1
+}

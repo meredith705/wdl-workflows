@@ -1,5 +1,6 @@
 {
-  "align_stats.READS": "../chimera_stats/test.reads.fastq.gz",
-  "align_stats.REFERENCE_FILE": "../chimera_stats/ref.fa.gz"
+  "align_stats.FASTQ_FILE": "../chimera_stats/test.reads.fastq.gz",
+  "align_stats.REFERENCE_FILE": "../chimera_stats/ref.fa.gz",
+  "align_stats.runMinimap2.memSizeGB": 1
 }
 
