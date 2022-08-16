@@ -53,7 +53,7 @@ task subsetReads {
         memory: memSizeGB + " GB"
         cpu: 1
         disks: "local-disk " + diskSizeGB + " SSD"
-        docker: "jmonlong/read_subset_qscore:latest"
+        docker: "quay.io/jmonlong/read_subset_qscore:latest"
         preemptible: 1
     }
 }

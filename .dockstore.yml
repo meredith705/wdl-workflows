@@ -44,3 +44,14 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: SubsetFastqByQscore
+    subclass: WDL
+    description: Subset a fastq for reads with a minimum basecalling qscore. 
+    primaryDescriptorPath: /read_subset_qscore/workflow.wdl
+    testParameterFiles:
+      - /read_subset_qscore/inputs.json
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
