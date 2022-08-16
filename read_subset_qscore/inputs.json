@@ -1,0 +1,5 @@
+{
+  "read_subset_qscore.FASTQ_FILE": "../read_stats/test.reads.fastq.gz",
+  "read_subset_qscore.SUMMARY_FILE": "test.summary.tsv.gz"
+}
+ 
