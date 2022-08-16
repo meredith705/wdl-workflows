@@ -4,11 +4,11 @@ workflow read_subset_qscore {
     meta {
 	    author: "Jean Monlong"
         email: "jmonlong@ucsc.edu"
-        description: "Subset a fastq for reads with a minimum basecalling qscore. Both fastq and summary inputs should have the reads in the same order. They should if were the output of the same Guppy run. "
+        description: "Subset a fastq for reads with a minimum basecalling qscore."
     }
     parameter_meta {
-        FASTQ_FILE: "Reads in a gzipped FASTQ file. Should be in the same order as in the SUMMARY_FILE"
-        SUMMARY_FILE: "Guppy summary (gzipped TSV file). Should be in the same order as in the FASTQ_FILE"
+        FASTQ_FILE: "Reads in a gzipped FASTQ file. "
+        SUMMARY_FILE: "Guppy summary (gzipped TSV file). "
         MIN_QSCORE: "keep only reads with a qscore greater or equal to thie value. Default: 10"
     }
 
@@ -35,7 +35,7 @@ task subsetReads {
         File fastq_file
         File summary_file
         Int min_qscore = 10
-        Int memSizeGB = 2
+        Int memSizeGB = 8
     }
 
     Int diskSizeGB = 3 * round(size(fastq_file, 'G')) + 10

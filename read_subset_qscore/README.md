@@ -1,7 +1,5 @@
 Subset a fastq for reads with a minimum basecalling qscore. 
 
-Both fastq and summary inputs should have the reads in the same order. They should if were the output of the same Guppy run. 
-
 ## Testing locally
 
 Test with :
