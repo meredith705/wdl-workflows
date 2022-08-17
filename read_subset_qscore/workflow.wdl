@@ -35,14 +35,16 @@ task subsetReads {
         File fastq_file
         File summary_file
         Int min_qscore = 10
-        Int memSizeGB = 8
+        Int memSizeGB = 4
+        Int threads = 4
     }
 
     Int diskSizeGB = 3 * round(size(fastq_file, 'G')) + 10
+    Int threadsGzip = if threads > 1 then threads - 1 else 1
 	command <<<
         set -eux -o pipefail
 
-        python3 /scripts/subset_reads_by_qscore.py -f ~{fastq_file} -s ~{summary_file} -q ~{min_qscore} -o reads_min~{min_qscore}.fastq.gz
+        python3 /scripts/subset_reads_by_qscore.py -f ~{fastq_file} -s ~{summary_file} -q ~{min_qscore} | pigz -p {threadsGzip} > reads_min~{min_qscore}.fastq.gz
 	>>>
 
 	output {
@@ -51,7 +53,7 @@ task subsetReads {
 
     runtime {
         memory: memSizeGB + " GB"
-        cpu: 1
+        cpu: threads
         disks: "local-disk " + diskSizeGB + " SSD"
         docker: "quay.io/jmonlong/read_subset_qscore:latest"
         preemptible: 1
