@@ -44,7 +44,7 @@ task subsetReads {
 	command <<<
         set -eux -o pipefail
 
-        python3 /scripts/subset_reads_by_qscore.py -f ~{fastq_file} -s ~{summary_file} -q ~{min_qscore} | pigz -p {threadsGzip} > reads_min~{min_qscore}.fastq.gz
+        python3 /scripts/subset_reads_by_qscore.py -f ~{fastq_file} -s ~{summary_file} -q ~{min_qscore} | pigz -p ~{threadsGzip} > reads_min~{min_qscore}.fastq.gz
 	>>>
 
 	output {
