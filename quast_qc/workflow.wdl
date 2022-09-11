@@ -57,7 +57,7 @@ task quast {
 
         # initilization
         rm -f ~{label}.fasta
-        for $ASM_FULL_PATH in ~{sep=" " assemblyFasta}
+        for ASM_FULL_PATH in ~{sep=" " assemblyFasta}
         do
             ASM_FILENAME=$(basename -- "$ASM_FULL_PATH")
             if [[ $ASM_FILENAME =~ \.gz$ ]]; then
