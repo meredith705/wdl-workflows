@@ -55,3 +55,14 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: QuastQC
+    subclass: WDL
+    description: Run QUAST to get QC metrics on an assembly slightly tweaked from https://dockstore.org/workflows/github.com/human-pangenomics/hpp_production_workflows/Quast to allow for an input array of fasta files (that will be concatenated).
+    primaryDescriptorPath: /quast_qc/workflow.wdl
+    testParameterFiles:
+      - /quast_qc/inputs.json
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
