@@ -66,3 +66,12 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: AsmGene
+    subclass: WDL
+    description: Same as github.com/human-pangenomics/hpp_production_workflows/Asmgene but with defined output (e.g. for Terra table)
+    primaryDescriptorPath: /asmgene/workflow.wdl
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu

@@ -1,0 +1,6 @@
+{
+  "AsmGene.assembly_fasta": "../chimera_stats/ref.fa.gz",
+  "AsmGene.genes_fasta": "../chimera_stats/ref.fa.gz",
+  "AsmGene.reference_fasta": "../chimera_stats/ref.fa.gz"
+}
+
