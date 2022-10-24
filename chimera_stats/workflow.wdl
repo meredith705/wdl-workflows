@@ -66,11 +66,9 @@ task runLiger2LiGerFromFastq {
 
         ## tar some outputs
         mkdir -p ${OUTPREF}.liger2liger_output
-        mv */*chimer_distribution_coverage.png ${OUTPREF}.liger2liger_output/
-        mv */*chimer_distribution_percent.png ${OUTPREF}.liger2liger_output/
-        mv */*chimer_distribution_raw.png ${OUTPREF}.liger2liger_output/
-        mv */*.chimeric_reads.txt ${OUTPREF}.liger2liger_output/
-        tar czvf ${OUTPREF}.liger2liger_output.tar.gz ${OUTPREF}.liger2liger_output/
+        mv */*.png ${OUTPREF}.liger2liger_output/
+        mv */*.txt ${OUTPREF}.liger2liger_output/
+        tar -czvf ${OUTPREF}.liger2liger_output.tar.gz ${OUTPREF}.liger2liger_output/
 
 	>>>
 
