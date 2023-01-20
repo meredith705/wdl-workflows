@@ -7,3 +7,4 @@
 - [guppy_basecalling](guppy_basecalling) to basecall nanopore data (from fast5).
 - [read_subset_qscore](read_subset_qscore) to subset a basecalled fastq by qscore.
 - [align_stats](align_stats) to get identity stats from long reads.
+- [index_bam](index_bam) to index a BAM

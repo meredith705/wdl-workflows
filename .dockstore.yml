@@ -75,3 +75,12 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: IndexBam
+    subclass: WDL
+    description: Index a BAM with samtools
+    primaryDescriptorPath: /index_bam/workflow.wdl
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
