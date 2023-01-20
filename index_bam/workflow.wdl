@@ -39,6 +39,7 @@ task bamIndex {
         memory: "4 GB"
         cpu: 1
         disks: "local-disk " + disk + " SSD"
+        preemptible: 1
     }
 }
 
