@@ -43,6 +43,7 @@ workflow add_unmapped_gam_bam {
     
     output {
         File bam = mergeBams.merged_bam
+        File bam_index = mergeBams.merged_bam_index
     }
 }
 
@@ -96,7 +97,7 @@ task extractSortedReadNameBam {
         memory: memSizeGB + " GB"
         cpu: threadCount
         disks: "local-disk " + diskSizeGB + " SSD"
-        docker: "quay.io/biocontainers/samtools:1.16.1--h6899075_1"
+        docker: "quay.io/vgteam/vg:v1.44.0"
         preemptible: 1
     }
 }
@@ -126,7 +127,7 @@ task listMissingReadnames {
         memory: memSizeGB + " GB"
         cpu: threadCount
         disks: "local-disk " + diskSizeGB + " SSD"
-        docker: "quay.io/biocontainers/samtools:1.16.1--h6899075_1"
+        docker: "quay.io/vgteam/vg:v1.44.0"
         preemptible: 1
     }
 }
@@ -173,11 +174,14 @@ task mergeBams {
 
 	command <<<
         set -eux -o pipefail
-        samtools merge -O BAM merged.bam ~{bam1} ~{bam2} 
+        samtools merge -O BAM merged.bam ~{bam1} ~{bam2}
+
+        samtools index -b merged.bam merged.bam.bai
 	>>>
 
 	output {
 		File merged_bam = "merged.bam"
+		File merged_bam_index = "merged.bam.bai"
 	}
 
     runtime {
