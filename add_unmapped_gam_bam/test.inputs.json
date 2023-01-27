@@ -1,0 +1,5 @@
+{
+  "add_unmapped_gam_bam.GAM": "reads.gam",
+  "add_unmapped_gam_bam.BAM": "aligned.bam",
+  "add_unmapped_gam_bam.SCRIPT": "gam_to_unmapped_bam.py"  
+}

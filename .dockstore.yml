@@ -84,3 +84,12 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: AddUnmappedGamBam
+    subclass: WDL
+    description: Index a BAM with samtools
+    primaryDescriptorPath: /add_unmapped_gam_bam/workflow.wdl
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
