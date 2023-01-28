@@ -137,7 +137,7 @@ task subsetIntoUmappedBam {
         File gam
         File read_names
         File script
-        Int memSizeGB = 4
+        Int memSizeGB = 8
         Int threadCount = 3
         Int diskSizeGB = 5*round(size(gam, "GB") + size(read_names, "GB")) + 20
     }
@@ -159,7 +159,6 @@ task subsetIntoUmappedBam {
         cpu: threadCount
         disks: "local-disk " + diskSizeGB + " SSD"
         docker: "quay.io/vgteam/vg:v1.44.0"
-        preemptible: 1
     }
 }
 
