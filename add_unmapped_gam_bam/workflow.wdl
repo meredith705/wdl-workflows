@@ -172,10 +172,22 @@ task mergeBams {
     }
 
 	command <<<
-        set -eux -o pipefail
-        samtools merge -O BAM merged.bam ~{bam1} ~{bam2}
+ set -eux -o pipefail
 
-        samtools index -b merged.bam merged.bam.bai
+ ## fix read group
+ RG=`samtools view -H ~{bam1} | grep "^@RG"`
+ if [ "$RG" ]
+ then
+     samtools addreplacerg -r "$RG" -o bam2.rg.bam ~{bam2}
+ else
+     ln -s ~{bam2} bam2.rg.bam
+ fi
+
+ ## merge BAMs
+ samtools merge -cp -O BAM merged.bam ~{bam1} bam2.rg.bam
+
+ ## index
+ samtools index -b merged.bam merged.bam.bai
 	>>>
 
 	output {
