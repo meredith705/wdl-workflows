@@ -93,3 +93,12 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: SNPeffAnnotate
+    subclass: WDL
+    description: "Annotate a VCF with SNPeff"
+    primaryDescriptorPath: /snpeff/workflow.wdl
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu

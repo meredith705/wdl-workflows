@@ -1,0 +1,9 @@
+{
+  "snpeff_annotate.VCF": "test.vcf.gz",
+  "snpeff_annotate.SNPEFF_DB": "snpEff_v5_1_GRCh38.105.zip",
+  "snpeff_annotate.SNPEFF_DB_NAME": "GRCh38.105",
+  "snpeff_annotate.SPLIT_MULTIAL": true,
+  "snpeff_annotate.SORT_INDEX_VCF": true,
+  "snpeff_annotate.KEEP_ANN_ONLY": true,
+  "snpeff_annotate.annotate_with_snpeff.memSizeGB": 4
+}
