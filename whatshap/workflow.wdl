@@ -83,7 +83,7 @@ task whatshap_compare {
         memory: memSizeGB + " GB"
         cpu: threadCount
         disks: "local-disk " + diskSizeGB + " SSD"
-        docker: "quay.io/jmonlong/whatshap:1.7"
+        docker: "quay.io/jmonlong/whatshap@sha256:03e5d1126b46c9bc671219b4eb7e9647fcb8daf22ce68acaac7496a49d8e057d"
         preemptible: 1
     }
 }
