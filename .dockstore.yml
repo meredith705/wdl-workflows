@@ -102,3 +102,12 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: WhatsHapCompare
+    subclass: WDL
+    description: "Evaluate phasing in VCF using WhatsHap. Adapted from Trevor Pesout's version."
+    primaryDescriptorPath: /whatshap/workflow.wdl
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
