@@ -36,19 +36,21 @@ task whatshap_compare {
         Int diskSizeGB = 5*round(size(call_vcf, "GB") + size(truth_vcf, "GB")) + 20
     }
 
-    String call_pref = sub(sub(basename(call_vcf), ".gz", ""), ".vcf", "")
-    String truth_pref = sub(sub(basename(truth_vcf), ".gz", ""), ".vcf", "")
+    String call_pref = sub(basename(call_vcf), ".gz", "")
+    String truth_pref = sub(basename(truth_vcf), ".gz", "")
     command <<<
     set -eux -o pipefail
 
     echo ~{sample_name} > sample.txt
     
     ## format sample name for truth VCF
-    bcftools reheader -s sample.txt ~{truth_vcf} > ~{truth_pref}.vcf
+    bcftools reheader -s sample.txt ~{truth_vcf} | bcftools view -Oz -o ~{truth_pref}.gz
    
     ## format sample name for call VCF
-    bcftools reheader -s sample.txt ~{call_vcf} > ~{call_pref}.vcf
-
+    ## also subset to chromosomes (remove alts)
+    CHRS=$(bcftools query -f '%CHROM\n' ~{call_vcf} | uniq | sort -u | grep -v "_" | awk 'BEGIN{ORS=","}{print $0}')
+    bcftools reheader -s sample.txt ~{call_vcf} | bcftools view -t $CHRS -O z -o ~{call_pref}.gz
+            
     mkdir whatshap_eval_results
     
     # get stats
@@ -56,7 +58,7 @@ task whatshap_compare {
              --tsv whatshap_eval_results/~{sample_name}.stats.tsv \
              --block-list whatshap_eval_results/~{sample_name}.blocks.txt \
              --chr-lengths /opt/whatshap/chr_lengths \
-             ~{call_pref}.vcf \
+             ~{call_pref}.gz \
              > whatshap_eval_results/~{sample_name}.stats.txt
     
     # get comparison
@@ -65,7 +67,7 @@ task whatshap_compare {
              --tsv-multiway whatshap_eval_results/~{sample_name}.multiway.tsv \
              --switch-error-bed whatshap_eval_results/~{sample_name}.switch_error.bed \
              --longest-block-tsv whatshap_eval_results/~{sample_name}.longest_block.tsv \
-             ~{call_pref}.vcf ~{truth_pref}.vcf \
+             ~{call_pref}.gz ~{truth_pref}.gz \
              > whatshap_eval_results/~{sample_name}.compare.txt
     
     # tarball it
