@@ -72,7 +72,7 @@ task splitFast5s {
 
         String dockerImage = "jiminpark/guppy-wdl:latest" 
 
-        Int preempts = 3
+        Int preempts = 0
         Int memSizeGB = 8
         Int extraDisk = 5
         Int threadCount = 2
@@ -230,12 +230,12 @@ task concatenateBam {
 
         Int preempts = 3
         Int memSizeGB = 8
-        Int threadCount = 3
+        Int threadCount = 4
         Int diskSizeGB = 500
     }
     
     command {
-        samtools merge -o "${sample_name}_${guppy_version}.bam" ${sep=" " files}
+        samtools merge -@ ${threadCount} -o "${sample_name}_${guppy_version}.bam" ${sep=" " files}
     }
 
     output {
@@ -258,17 +258,17 @@ task concatenateFastq {
         String sample_name
         String guppy_version
 
-        String dockerImage = "tpesout/megalodon:latest"
+        String dockerImage = "quay.io/glennhickey/pigz:2.3.1"
 
         # runtime
         Int preempts = 3
         Int memSizeGB = 8
-        Int threadCount = 3
+        Int threadCount = 4
         Int diskSizeGB = 500
     }
     
     command {
-        cat ${sep=" " files} | gzip -c > "${sample_name}_${guppy_version}.fastq.gz"
+        cat ${sep=" " files} | pigz -p ${threadCount} -c > "${sample_name}_${guppy_version}.fastq.gz"
     }
 
     output {
@@ -291,18 +291,18 @@ task concatenateSummary {
         String sample_name
         String guppy_version
 
-        String dockerImage = "tpesout/megalodon:latest"
+        String dockerImage = "quay.io/glennhickey/pigz:2.3.1"
 
         # runtime
         Int preempts = 3
         Int memSizeGB = 8
-        Int threadCount = 3
+        Int threadCount = 4
         Int diskSizeGB = 50
     }
     
     command {
         # concatenate files and remove duplicate headers
-        cat ${sep=" " files} | awk 'NR==1 || !/^filename/' | gzip -c > "${sample_name}_${guppy_version}_sequencing_summary.txt.gz"
+        cat ${sep=" " files} | awk 'NR==1 || !/^filename/' | pigz -p ${threadCount} -c > "${sample_name}_${guppy_version}_sequencing_summary.txt.gz"
     }
 
     output {
