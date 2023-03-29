@@ -216,7 +216,7 @@ task annotate_subset_with_db {
         memory: memSizeGB + " GB"
         cpu: threadCount
         disks: "local-disk " + diskSizeGB + " SSD"
-        docker: "docker://quay.io/biocontainers/snpsift:5.1d--hdfd78af_0"
+        docker: "quay.io/biocontainers/snpsift:5.1d--hdfd78af_0"
         preemptible: 1
     }
 }
