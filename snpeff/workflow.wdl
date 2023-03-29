@@ -209,7 +209,7 @@ task annotate_subset_with_db {
 	>>>
 
 	output {
-		File vcf = "~{basen}.snpeff.gnomad.clinvar.vcf.gz"
+		File vcf = "~{basen}.gnomad.clinvar.vcf.gz"
 	}
 
     runtime {
