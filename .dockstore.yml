@@ -111,3 +111,12 @@ workflows:
     authors:
       - name: Jean Monlong
         email: jmonlong@ucsc.edu
+  - name: VcfStats
+    subclass: WDL
+    description: "Extract some stats from a VCF: phase block N50, number of het/hom SVs"
+    primaryDescriptorPath: /vcf_stats/workflow.wdl
+    branches:
+      - master
+    authors:
+      - name: Jean Monlong
+        email: jmonlong@ucsc.edu
