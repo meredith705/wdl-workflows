@@ -122,7 +122,7 @@ task runLiger2LiGerFromBam {
         ## tar some outputs
         mkdir -p ~{outprefix}.liger2liger_output
         mv */*.png ~{outprefix}.liger2liger_output/
-        mv */*.txt ~{outprefix}.liger2liger_output/
+        mv *.txt ~{outprefix}.liger2liger_output/
         tar czvf ~{outprefix}.liger2liger_output.tar.gz ~{outprefix}.liger2liger_output/
 	>>>
 
