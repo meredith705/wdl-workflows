@@ -94,7 +94,7 @@ task runLiger2LiGerFromBam {
     }
 
     String outprefix = basename(select_first([bamFile]), '.bam')
-    Int diskSizeGB = 2*round(size(bamFile, 'G')) + 20
+    Int diskSizeGB = 3*round(size(bamFile, 'G')) + 20
     
 	command <<<
         # Set the exit code of a pipeline to that of the rightmost command
